@@ -1,0 +1,43 @@
+GET http://localhost:5000
+
+###
+
+POST  http://localhost:5000/user/register
+Content-Type: application/json
+
+{
+      "email": "Hoangvu200202@gmail.com",
+      "password": "12347"
+}
+###
+
+POST  http://localhost:5000/user/refresh-token
+Content-Type: application/json
+
+{
+      "refreshToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ5ZTYwYzM5NWE4Yzg2ZGMxN2Y1MTciLCJpYXQiOjE3MTYxNzcwMDgsImV4cCI6MTc0NzczNDYwOH0.S-Z6S5lsppSWzHfL-fcCGI6p4e5WssUcsAzvYMhXTzA"
+}
+
+###
+
+POST  http://localhost:5000/user/login
+Content-Type: application/json
+
+{
+      "email": "Hoangvu200202@gmail.com",
+      "password": "123457"
+}
+
+###
+
+DELETE   http://localhost:5000/user/logout
+Content-Type: application/json
+
+{
+      "refreshToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjRhYTg1ZTllMDNjODljZWFhZTZmMjAiLCJpYXQiOjE3MTYyMDAyMjAsImV4cCI6MTc0Nzc1NzgyMH0.p2UmNrL10pWteMAVrQQMfM5SK1JMsb1WADWg5KjWjrk"
+}
+
+###
+
+POST  http://localhost:5000/user/get-list
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjRhYTg1ZTllMDNjODljZWFhZTZmMjAiLCJpYXQiOjE3MTYyMjQ1MDMsImV4cCI6MTcxNjIyNDU2M30.E9om6o4YQVLJ5J88wj3vNl8QQh_9W4yzjUt6AuKA0-s
