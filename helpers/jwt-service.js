@@ -1,6 +1,7 @@
 const JWT = require("jsonwebtoken");
 const createError = require("http-errors");
 const client = require("../helpers/connections-redis");
+
 const signAccessToken = async (userId) => {
     return new Promise((resolve, reject) => {
         const payload = {

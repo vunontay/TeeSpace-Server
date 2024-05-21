@@ -1,7 +1,7 @@
 const User = require("../models/User.model");
 const { userValidate } = require("../helpers/validation");
 const client = require("../helpers/connections-redis");
-
+const createError = require("http-errors");
 const {
     signAccessToken,
     signRefreshToken,
@@ -13,20 +13,30 @@ module.exports = {
 
     register: async (req, res, next) => {
         try {
-            const { email, password } = req.body;
+            const { email, username, password } = req.body;
             const { error } = userValidate(req.body);
-
+            if (!username) {
+                throw createError(400, "Username is required");
+            }
             if (error) {
                 throw createError(error.details[0].message);
             }
 
-            const isExists = await User.findOne({ email });
-
-            if (isExists) {
+            // Check if email already exists
+            const emailExists = await User.findOne({ email });
+            if (emailExists) {
                 throw createError.Conflict(`${email} is already registered`);
             }
 
-            const user = new User({ email, password });
+            // Check if username already exists
+            const usernameExists = await User.findOne({ username });
+            if (usernameExists) {
+                throw createError.Conflict(
+                    `Username ${username} is already taken`
+                );
+            }
+
+            const user = new User({ email, username, password });
             const savedUser = await user.save();
 
             res.json({

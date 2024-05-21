@@ -7,6 +7,7 @@ const userValidate = (data) => {
             .email()
             .lowercase()
             .required(),
+        username: Joi.string().alphanum().min(6).max(30).lowercase(),
         password: Joi.string().min(6).max(32).required(),
     });
     return UserSchema.validate(data);

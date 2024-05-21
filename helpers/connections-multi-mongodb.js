@@ -5,8 +5,6 @@ function newConnection(url, name) {
     const connection = mongoose.createConnection(url);
 
     connection.on("connected", function () {
-        console.log(this.name);
-
         console.log(`Mongodb::: connected:::${name}`);
     });
     connection.on("disconnected", function () {
