@@ -41,7 +41,7 @@ module.exports = {
 
             res.json({
                 status: "success",
-                elements: savedUser,
+                data: savedUser,
             });
         } catch (error) {
             next(error);
@@ -90,10 +90,15 @@ module.exports = {
             }
             const accessToken = await signAccessToken(user._id);
             const refreshToken = await signRefreshToken(user._id);
+            const userWithoutPassword = {
+                ...user.toObject(),
+                password: undefined,
+            };
 
             res.json({
                 accessToken,
                 refreshToken,
+                data: userWithoutPassword,
             });
         } catch (error) {
             next(error);
@@ -121,10 +126,112 @@ module.exports = {
         }
     },
 
-    // GET LIST
+    // GET ALL USERS
+
+    getUsers: async (req, res, next) => {
+        try {
+            const response = await User.find();
+            if (!response || response.length === 0) {
+                throw createError.NotFound("No users found");
+            }
+            res.json({
+                status: "success",
+                users: response,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    // DELETE USER
+
+    deleteUser: async (req, res, next) => {
+        try {
+            const { _id } = req.query;
+            if (!_id) {
+                throw createError(400, "User id is required");
+            }
+            const response = await User.findByIdAndDelete(_id);
+
+            if (!response) {
+                throw createError(404, "User not found");
+            }
+
+            res.json({
+                status: "success",
+                message: "User deleted successfully",
+                deletedUser: response,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    // UPDATE USER
+
+    updateUser: async (req, res, next) => {
+        try {
+            const userId = req.params.userId;
+
+            if (!userId) {
+                throw createError(400, "User id is required");
+            }
+
+            if (Object.keys(req.body).length === 0) {
+                throw createError(400, "Request body is empty");
+            }
+
+            const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
+                new: true,
+                select: "-password -role",
+            });
+
+            if (!updatedUser) {
+                throw createError(404, "User not found");
+            }
+
+            res.json({
+                status: "success",
+                message: "User updated successfully",
+                updatedUser,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    // UPDATE USER BY ADMIN
+
+    updateUserByAdmin: async (req, res, next) => {
+        try {
+            const { _id } = req.query;
+            if (!_id) {
+                throw createError(400, "User id is required");
+            }
+            if (Object.keys(req.body).length === 0) {
+                throw createError(400, "Request body is empty");
+            }
+
+            const updatedUser = await User.findByIdAndUpdate(_id, req.body, {
+                new: true,
+                select: "-password -role",
+            });
+
+            if (!updatedUser) {
+                throw createError(404, "User not found");
+            }
+
+            res.json({
+                status: "success",
+                message: "User updated successfully",
+                updatedUser,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
 
     getList: (req, res, next) => {
-        console.log(req.headers);
         const listUsers = [
             {
                 email: "abc@gmail.com",
